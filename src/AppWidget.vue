@@ -7,21 +7,23 @@
       Add a widget...
     </div>
 
-    <draggable
-      v-model="widgets"
-      @start="drag=true"
-      @end="drag=false"
+    <Sortable
+      :list="widgets"
+      :options="options"
       item-key="id"
       class="widget__content"
+      @end="onEnd"
     >
       <template #item="{ element }">
-        <component :is="element.type"></component>
+        <component
+          class="draggable"
+          :is="{...element.type}"
+          v-bind="{id: element.id}"
+          :key="element.id"
+          @removeWidget="removeWidget"
+        ></component>
       </template>
-    </draggable>
-
-    <!-- <template v-for="(widget, index) in widgets" :key="index">
-      <component :is="widget.type"></component>
-    </template> -->
+    </Sortable>
 
     <div class="widget__add">
       <button
@@ -43,7 +45,8 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { Sortable } from 'sortablejs-vue3'
+import { ref, computed } from 'vue'
 import draggable from 'vuedraggable'
 import WidgetMenu from '@/components/WidgetMenu.vue'
 
@@ -53,12 +56,13 @@ export default {
   name: 'AppWidget',
 
   components: {
+    Sortable,
     draggable,
     WidgetMenu
   },
 
   setup () {
-    const { widgets, addWidget } = useWidget()
+    const { widgets, addWidget, moveWidget, removeWidget } = useWidget()
     const drag = ref(false)
     const widgetMenuVisible = ref(false)
 
@@ -74,6 +78,19 @@ export default {
       widgetMenuVisible.value = false
     }
 
+    const options = computed(() => {
+      return {
+        draggable: '.draggable',
+        animation: 150,
+        ghostClass: 'ghost',
+        dragClass: 'drag'
+      }
+    })
+
+    const onEnd = (evt) => {
+      moveWidget(evt.oldIndex, evt.newIndex)
+    }
+
     return {
       drag,
       widgets,
@@ -81,7 +98,11 @@ export default {
       openWidgetMenu,
       openMenu,
       closeMenu,
-      addWidget
+      addWidget,
+      moveWidget,
+      removeWidget,
+      onEnd,
+      options
     }
   }
 }
@@ -138,5 +159,40 @@ export default {
     &__content {
       display: flex;
     }
+
+      .fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.35s ease;
+}
+
+.fade-enter-from,
+.fade-leave-active {
+  opacity: 0;
+}
   }
+        .fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.35s ease;
+}
+
+.fade-enter-from,
+.fade-leave-active {
+  opacity: 0;
+}
+
+.draggable {
+  background: #fff;
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid #ccc;
+  cursor: move;
+}
+.ghost {
+  opacity: 0.5;
+  background: #fff;
+  border: 1px dashed #ccc;
+}
+.drag {
+  background: #f5f5f5;
+}
 </style>

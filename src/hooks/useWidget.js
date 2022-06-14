@@ -12,7 +12,6 @@ export function useWidget () {
   const widgets = ref([])
 
   const addWidget = (option) => {
-    console.log(option)
     if (option === 'coin') {
       widgets.value.push({
         type: CoinWidget,
@@ -33,5 +32,21 @@ export function useWidget () {
     }
   }
 
-  return { widgets, addWidget }
+  const removeWidget = (id) => {
+    const removeIndex = widgets.value.map((item) => { return item.id }).indexOf(id)
+    widgets.value.splice(removeIndex, 1)
+    widgetsCounter.value = widgets.value.length
+
+    widgets.value.map((item, i) => {
+      item.id = i
+      return item
+    })
+  }
+
+  const moveWidget = (from, to) => {
+    const item = widgets.value.splice(from, 1)[0]
+    widgets.value.splice(to, 0, item)
+  }
+
+  return { widgets, addWidget, moveWidget, removeWidget }
 }
