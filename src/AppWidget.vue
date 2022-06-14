@@ -1,5 +1,12 @@
 <template>
   <div class="widget">
+    <div
+      v-if="!widgets.length"
+      class="widget__placeholder"
+    >
+      Add a widget...
+    </div>
+
     <draggable
       v-model="widgets"
       @start="drag=true"
@@ -16,30 +23,31 @@
       <component :is="widget.type"></component>
     </template> -->
 
-    <button
-      title="Add a widget"
-      @click="addWidget"
-      class="widget__add"
-    >
-      +
-    </button>
+    <div class="widget__add">
+      <button
+        title="Add a widget"
+        @click="openWidgetMenu"
+        class="widget__button"
+      >
+        +
+      </button>
 
-    <widget-menu />
+      <widget-menu
+        v-if="widgetMenuVisible"
+        @closeMenu="closeMenu"
+        @addWidget="addWidget"
+      />
+    </div>
 
   </div>
 </template>
 
 <script>
-import { ref, shallowRef } from 'vue'
+import { ref } from 'vue'
 import draggable from 'vuedraggable'
-import CoinComponent from '@/components/Widgets/CoinWidget.vue'
-import TimeComponent from '@/components/Widgets/TimeWidget.vue'
-import WeatherComponent from '@/components/Widgets/WeatherWidget.vue'
 import WidgetMenu from '@/components/WidgetMenu.vue'
 
-const CoinWidget = shallowRef(CoinComponent)
-const TimeWidget = shallowRef(TimeComponent)
-const WeatherWidget = shallowRef(WeatherComponent)
+import { useWidget } from '@/hooks/useWidget'
 
 export default {
   name: 'AppWidget',
@@ -50,27 +58,29 @@ export default {
   },
 
   setup () {
+    const { widgets, addWidget } = useWidget()
     const drag = ref(false)
-    const widgetsCounter = ref(0)
+    const widgetMenuVisible = ref(false)
 
-    const widgets = ref([
-      {
-        type: WeatherWidget,
-        id: widgetsCounter.value++
-      }
-    ])
+    function openWidgetMenu () {
+      openMenu()
+    }
 
-    function addWidget () {
-      console.log('addWidget')
-      widgets.value.push({
-        type: TimeWidget,
-        id: widgetsCounter.value++
-      })
+    const openMenu = () => {
+      widgetMenuVisible.value = true
+    }
+
+    const closeMenu = () => {
+      widgetMenuVisible.value = false
     }
 
     return {
       drag,
       widgets,
+      widgetMenuVisible,
+      openWidgetMenu,
+      openMenu,
+      closeMenu,
       addWidget
     }
   }
@@ -89,7 +99,19 @@ export default {
     display: flex;
     align-items: center;
 
+    &__placeholder {
+      margin-right: 12px;
+
+      font-size: 24px;
+      font-weight: bold;
+      color: $light-blue;
+    }
+
     &__add {
+      position: relative;
+    }
+
+    &__button {
       width: 48px;
       height: 48px;
       margin: 0 8px;
@@ -105,7 +127,7 @@ export default {
       font-weight: bold;
       color: $light-blue;
 
-      transition: all .3s ease-in-out;
+      transition: $transition;
 
       &:hover {
         color: $white;

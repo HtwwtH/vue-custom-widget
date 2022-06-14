@@ -34,6 +34,7 @@ export default {
     background-color: $white;
     padding: 8px;
     margin: 0 8px;
+    border-radius: 4px;
 
     text-align: center;
   }
