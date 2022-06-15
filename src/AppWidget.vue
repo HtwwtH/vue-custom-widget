@@ -1,8 +1,8 @@
 <template>
-  <div class="widget">
+  <div class="widget-main">
     <div
       v-if="!widgets.length"
-      class="widget__placeholder"
+      class="widget-main__placeholder"
     >
       Add a widget...
     </div>
@@ -11,7 +11,7 @@
       :list="widgets"
       :options="options"
       item-key="id"
-      class="widget__content"
+      class="widget-main__content"
       @end="onEnd"
     >
       <template #item="{ element }">
@@ -25,11 +25,11 @@
       </template>
     </Sortable>
 
-    <div class="widget__add">
+    <div class="widget-main__add">
       <button
         title="Add a widget"
         @click="openWidgetMenu"
-        class="widget__button"
+        class="widget-main__button"
       >
         +
       </button>
@@ -110,7 +110,7 @@ export default {
 </script>
 
 <style lang="scss">
-  .widget {
+  .widget-main {
     width: fit-content;
     font-family: 'Open Sans', sans-serif;
     letter-spacing: .5px;

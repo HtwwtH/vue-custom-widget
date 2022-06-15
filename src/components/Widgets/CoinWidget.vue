@@ -1,32 +1,59 @@
 <template>
-<transition name="fade">
-  <div v-if="mounted" class="coin" ref="coin">
-    <button
-      class="coin__delete"
-      title="delete widget"
-      @click="onDeleteClick"
-    >
-      <img
-        :src="DeleteIcon"
-        alt="delete widget"
+  <transition name='fade'>
+    <div v-if='mounted' class='coin widget' ref='coin'>
+      <button
+        class='widget__delete'
+        title='delete widget'
+        @click='onDeleteClick'
       >
-    </button>
+        <img
+          :src='DeleteIcon'
+          alt='delete widget'
+        >
+      </button>
 
-    <p class="coin__title">Exchange rate</p>
-    <p class="coin__subtitle">Check the currency:</p>
-    <select name="select-coin" class="coin__form">
-      <option>Dollar</option>
-      <option>Euro</option>
-      <option>Iena</option>
-    </select>
+      <p class='widget__title'>Exchange rate</p>
 
-  </div>
-</transition>
+      <p class='widget__subtitle'>Check the currency:</p>
+      <select
+        name='select-coin'
+        class='coin__select'
+        :value="selected"
+        @change="onChangeSelected"
+      >
+        <option
+          v-for="(value, name) in symbols"
+          :key="value"
+        >
+          {{ name }}
+          </option>
+      </select>
+
+      <p class='widget__subtitle'>Convert to:</p>
+      <select
+        name='select-coin'
+        class='coin__form'
+        :value="convertTo"
+        @change="onChangeConvertTo"
+      >
+        <option
+          v-for="(value, name) in symbols"
+          :key="value"
+        >
+          {{ name }}
+          </option>
+      </select>
+
+      <p class='coin__converter'>1 {{ selected }} = {{ converted }} {{ convertTo }}</p>
+
+    </div>
+  </transition>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue'
 import DeleteIcon from '@/assets/icons/delete-icon.svg'
+import { useCoin } from '@/hooks/widgets/useCoin'
 
 export default {
   name: 'CoinWidget',
@@ -38,53 +65,53 @@ export default {
   },
 
   setup (props, { emit }) {
-    const onDeleteClick = () => emit('removeWidget', props.id)
+    const { selected, convertTo, converted, symbols, getSymbolsList, getConvertedResult } = useCoin()
     const mounted = ref(false)
 
+    const onDeleteClick = () => emit('removeWidget', props.id)
+
     onMounted(() => {
+      getSymbolsList()
+      getConvertedResult()
       mounted.value = true
     })
+
+    const onChangeSelected = (e) => {
+      selected.value = e.target.value
+      getConvertedResult()
+    }
+
+    const onChangeConvertTo = (e) => {
+      convertTo.value = e.target.value
+      getConvertedResult()
+    }
 
     return {
       mounted,
       DeleteIcon,
-      onDeleteClick
+      symbols,
+      selected,
+      convertTo,
+      converted,
+      onDeleteClick,
+      onChangeSelected,
+      onChangeConvertTo
     }
   }
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped lang='scss'>
   .coin {
-    position: relative;
-    background-color: $white;
-    padding: 8px;
-    margin: 0 8px;
-    border-radius: 4px;
+    width: 184px;
 
-    text-align: center;
-
-    &__delete {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 24px;
-      padding: 8px;
-      box-sizing: content-box;
-
-      img {
-        width: 100%;
-      }
+    select {
+      width: 55px;
     }
 
-    &__title {
-      width: 70%;
-      text-align: left;
-    }
-
-    &__subtitle {
-      margin: 8px auto 4px;
-      font-size: 12px;
+    &__converter {
+      margin: 8px auto 0;
+      font-size: 14px;
     }
   }
 </style>

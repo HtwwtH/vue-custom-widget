@@ -5,6 +5,7 @@ module.exports = {
   ],
   rules: {
     'no-unused-vars': 'warn',
+    'quote-props': 'warn',
     'vue/first-attribute-linebreak': ['error', {
       singleline: 'ignore',
       multiline: 'below'

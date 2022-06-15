@@ -8,8 +8,17 @@
 </template>
 
 <script>
+import { ref, onMounted } from 'vue'
+import DeleteIcon from '@/assets/icons/delete-icon.svg'
+
 export default {
   name: 'TimeWidget',
+
+  emits: ['removeWidget'],
+
+  props: {
+    id: Number
+  },
 
   data () {
     return {

@@ -7,3 +7,37 @@
 .fade-leave-active {
   opacity: 0;
 }
+
+.widget {
+  display: block;
+  position: relative;
+  background-color: $white;
+  padding: 8px;
+  margin: 0 8px;
+  border-radius: 4px;
+
+  text-align: center;
+
+  &__delete {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 24px;
+    padding: 8px;
+    box-sizing: content-box;
+
+    img {
+      width: 100%;
+    }
+  }
+
+  &__title {
+    width: 70%;
+    text-align: left;
+  }
+
+  &__subtitle {
+    margin: 8px auto 4px;
+    font-size: 12px;
+  }
+}
