@@ -17,14 +17,24 @@ import { ref, onMounted } from 'vue'
 export default {
   name: 'TimeClock',
 
+  props: {
+    timezone: String
+  },
+
   setup (props) {
     const hours = ref(0)
     const minutes = ref(0)
     const seconds = ref(0)
 
+    const convertTimezone = (date) => {
+      return new Date((new Date(date)).toLocaleString('en-US', { timeZone: props.timezone }))
+    }
+
     const setTime = () => {
       setInterval(() => {
-        const date = new Date()
+        let date = new Date()
+        date = convertTimezone(date)
+
         hours.value = date.getHours()
         minutes.value = checkSingleDigit(date.getMinutes())
         seconds.value = checkSingleDigit(date.getSeconds())

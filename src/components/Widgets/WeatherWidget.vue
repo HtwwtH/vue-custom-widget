@@ -1,45 +1,58 @@
 <template>
   <transition name='fade'>
     <div v-if="mounted" class="weather widget">
-      <button
-        class='widget__delete'
-        title='delete widget'
-        @click='onDeleteClick'
-      >
-        <img
-          :src='DeleteIcon'
-          alt='delete widget'
+      <div class="widget__header">
+        <button
+          class='widget__delete'
+          title='delete widget'
+          @click='onDeleteClick'
         >
-      </button>
+          <img
+            :src='DeleteIcon'
+            alt='delete widget'
+          >
+        </button>
 
-      <p class='widget__title'>Weather</p>
-
-      <p class='widget__subtitle'>Check the city:</p>
-
-      <select
-        name='select-city'
-        class='city__select'
-        :value="selected"
-        @change="onChangeCity"
-      >
-        <option
-          v-for="(id, city) in cities"
-          :key="id"
-        >
-          {{ city }}
-          </option>
-      </select>
-
-      <div class="weather__temperature">
-        {{ temperature }}°
+        <p class='widget__title'>Weather</p>
       </div>
 
-      <img
-        v-if="iconId"
-        class="weather__icon"
-        :src="weatherImg" alt="weather icon"
+      <div
+        v-if="isLoading"
+        class="loader"
       >
+        <circle2 :background="'#93c2ff'" :color="'#fff'"/>
+      </div>
 
+      <div v-else class="widget__content">
+        <p class='widget__subtitle'>Check the city:</p>
+
+        <select
+          name='select-city'
+          class='city__select'
+          :value="selected"
+          @change="onChangeCity"
+        >
+          <option
+            v-for="(id, city) in cities"
+            :key="id"
+          >
+            {{ city }}
+            </option>
+        </select>
+
+        <div class="weather__temperature">
+          {{ temperature }}°
+        </div>
+
+        <div class="weather__image">
+          <img
+            v-if="iconId"
+            class="weather__icon"
+            :src="weatherImg" alt="weather icon"
+          >
+        </div>
+
+      </div>
     </div>
   </transition>
 </template>
@@ -48,9 +61,14 @@
 import { ref, onMounted } from 'vue'
 import DeleteIcon from '@/assets/icons/delete-icon.svg'
 import { useWeather } from '@/hooks/widgets/useWeather'
+import { Circle2 } from 'vue-loading-spinner'
 
 export default {
   name: 'WeatherWidget',
+
+  components: {
+    Circle2
+  },
 
   emits: ['removeWidget'],
 
@@ -62,12 +80,14 @@ export default {
     const { selected, temperature, iconId, weatherImg, cities, getWeather } = useWeather()
 
     const mounted = ref(false)
+    const isLoading = ref(true)
 
     const onDeleteClick = () => emit('removeWidget', props.id)
 
-    onMounted(() => {
-      getWeather()
+    onMounted(async () => {
       mounted.value = true
+      await getWeather()
+      isLoading.value = false
     })
 
     const onChangeCity = (e) => {
@@ -77,6 +97,7 @@ export default {
 
     return {
       mounted,
+      isLoading,
       DeleteIcon,
       selected,
       cities,
@@ -92,14 +113,20 @@ export default {
 
 <style scoped lang="scss">
   .weather {
+    width: 120px;
     height: 173px;
 
     &__temperature {
       margin: 8px auto 0;
     }
 
-    &__icon {
-      width: 64px;
+    &__image {
+      width: 100%;
+      margin: 0 auto;
+
+      img {
+        width: 64px;
+      }
     }
   }
 </style>

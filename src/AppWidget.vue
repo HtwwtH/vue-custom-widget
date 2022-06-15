@@ -86,9 +86,6 @@ export default {
     })
 
     const onEnd = (evt) => {
-      console.log('evt ', evt)
-      console.log('oldDraggableIndex ', evt.oldDraggableIndex)
-      console.log('newDraggableIndex ', evt.newDraggableIndex)
       moveWidget(evt.oldDraggableIndex, evt.newDraggableIndex)
     }
 
@@ -112,6 +109,7 @@ export default {
 <style lang="scss">
   .widget-main {
     width: fit-content;
+    max-width: 90vw;
     font-family: 'Open Sans', sans-serif;
     letter-spacing: .5px;
     background-color: $blue;
@@ -159,6 +157,7 @@ export default {
 
     &__content {
       display: flex;
+      flex-wrap: wrap;
     }
   }
 

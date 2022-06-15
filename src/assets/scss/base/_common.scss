@@ -9,11 +9,13 @@
 }
 
 .widget {
-  display: block;
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
   position: relative;
   background-color: $white;
   padding: 8px;
-  margin: 0 8px;
+  margin: 4px 8px;
   border-radius: 4px;
 
   text-align: center;
@@ -40,4 +42,11 @@
     margin: 8px auto 4px;
     font-size: 12px;
   }
+}
+
+.loader {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

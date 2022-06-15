@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { getTimezonesList } from '@/helpers/api/time'
 
 export function useTime () {

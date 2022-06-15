@@ -30,7 +30,6 @@ export function useWidget () {
         id: widgetsCounter.value++
       })
     }
-    console.log(widgets)
   }
 
   const removeWidget = (id) => {

@@ -1,39 +1,50 @@
 <template>
   <transition name='fade'>
     <div class="time widget">
-      <button
-        class='widget__delete'
-        title='delete widget'
-        @click='onDeleteClick'
-      >
-        <img
-          :src='DeleteIcon'
-          alt='delete widget'
+      <div class="widget__header">
+        <button
+          class='widget__delete'
+          title='delete widget'
+          @click='onDeleteClick'
         >
-      </button>
+          <img
+            :src='DeleteIcon'
+            alt='delete widget'
+          >
+        </button>
 
-      <p class="widget__title">Time</p>
+        <p class="widget__title">Time</p>
+      </div>
 
-      <p class='widget__subtitle'>Check the timezone:</p>
-
-      <select
-        name='select-city'
-        class='city__select'
-        :value="selected"
-        @change="onChangeCity"
+      <div
+        v-if="isLoading"
+        class="loader"
       >
-        <option
-          v-for="(timezone) in timezones"
-          :key="timezone"
+        <circle2 :background="'#93c2ff'" :color="'#fff'"/>
+      </div>
+
+      <div v-else class="widget__content">
+        <p class='widget__subtitle'>Check the timezone:</p>
+
+        <select
+          name='select-city'
+          class='city__select'
+          :value="selected"
+          @change="onChangeTimezone"
         >
-          {{ timezone }}
-          </option>
-      </select>
+          <option
+            v-for="(timezone) in timezones"
+            :key="timezone"
+          >
+            {{ timezone }}
+            </option>
+        </select>
 
-      <p class='widget__subtitle'>Time here is:</p>
+        <p class='widget__subtitle'>Time here is:</p>
 
-      <time-clock />
+        <time-clock :timezone="selected"/>
 
+      </div>
     </div>
   </transition>
 </template>
@@ -42,13 +53,15 @@
 import { ref, onMounted } from 'vue'
 import DeleteIcon from '@/assets/icons/delete-icon.svg'
 import TimeClock from '@/components/TimeClock.vue'
+import { Circle2 } from 'vue-loading-spinner'
 import { useTime } from '@/hooks/widgets/useTime'
 
 export default {
   name: 'TimeWidget',
 
   components: {
-    TimeClock
+    TimeClock,
+    Circle2
   },
 
   emits: ['removeWidget'],
@@ -62,26 +75,25 @@ export default {
 
     const onDeleteClick = () => emit('removeWidget', props.id)
     const mounted = ref(false)
+    const isLoading = ref(true)
 
-    onMounted(() => {
-      getTimezones()
+    onMounted(async () => {
       mounted.value = true
+      await getTimezones()
+      isLoading.value = false
     })
+
+    const onChangeTimezone = (e) => {
+      selected.value = e.target.value
+    }
 
     return {
       DeleteIcon,
+      isLoading,
       onDeleteClick,
+      onChangeTimezone,
       selected,
       timezones
-    }
-  },
-
-  methods: {
-    increment () {
-      this.counter++
-    },
-    decrement () {
-      this.counter--
     }
   }
 }
@@ -89,6 +101,7 @@ export default {
 
 <style scoped lang="scss">
   .time {
-
+    width: 249px;
+    height: 163px;
   }
 </style>

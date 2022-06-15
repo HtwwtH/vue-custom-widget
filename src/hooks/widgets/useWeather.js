@@ -21,7 +21,6 @@ export function useWeather () {
 
   const getWeather = async () => {
     await getCityWeather(cities[selected.value]).then((res) => {
-      console.log(res.data)
       temperature.value = res.data.list[0].main.temp
       iconId.value = res.data.list[0].weather[0].icon
     }, (error) => {

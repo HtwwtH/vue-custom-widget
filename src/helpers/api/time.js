@@ -7,7 +7,3 @@ const instance = axios.create({
 export const getTimezonesList = async () => {
   return await instance.get('/timezone')
 }
-
-export const getCityWeather = async (id) => {
-  return await instance.get(`/forecast?id=${id}&appid=${process.env.VUE_APP_WEATHER_API_KEY}&units=metric`)
-}

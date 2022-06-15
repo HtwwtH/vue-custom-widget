@@ -10,7 +10,6 @@ export function useCoin () {
 
   const getSymbolsList = async () => {
     await getSymbols().then((response) => {
-      console.log(response.data)
       symbols.value = response.data.symbols
     }, (error) => {
       console.error(error)
@@ -19,7 +18,6 @@ export function useCoin () {
 
   const getConvertedResult = async () => {
     await getConverted(convertTo.value, selected.value).then((response) => {
-      console.log(response.data)
       converted.value = response.data.result
     }, (error) => {
       console.error(error)
