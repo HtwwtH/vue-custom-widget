@@ -1,6 +1,6 @@
 <template>
   <transition name='fade'>
-    <div v-if='mounted' class='coin widget' ref='coin'>
+    <div v-if='mounted' class='coin widget'>
       <button
         class='widget__delete'
         title='delete widget'
@@ -104,6 +104,7 @@ export default {
 <style scoped lang='scss'>
   .coin {
     width: 184px;
+    height: fit-content;
 
     select {
       width: 55px;

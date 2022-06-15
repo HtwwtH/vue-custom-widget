@@ -92,13 +92,7 @@ export default {
 
 <style scoped lang="scss">
   .weather {
-    width: 100px;
-    background-color: $white;
-    padding: 8px;
-    margin: 0 8px;
-    border-radius: 4px;
-
-    text-align: center;
+    height: 173px;
 
     &__temperature {
       margin: 8px auto 0;
