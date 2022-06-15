@@ -1,5 +1,6 @@
 <template>
-  <div class="coin">
+<transition name="fade">
+  <div v-if="mounted" class="coin" ref="coin">
     <button
       class="coin__delete"
       title="delete widget"
@@ -20,9 +21,11 @@
     </select>
 
   </div>
+</transition>
 </template>
 
 <script>
+import { ref, onMounted } from 'vue'
 import DeleteIcon from '@/assets/icons/delete-icon.svg'
 
 export default {
@@ -36,8 +39,14 @@ export default {
 
   setup (props, { emit }) {
     const onDeleteClick = () => emit('removeWidget', props.id)
+    const mounted = ref(false)
+
+    onMounted(() => {
+      mounted.value = true
+    })
 
     return {
+      mounted,
       DeleteIcon,
       onDeleteClick
     }

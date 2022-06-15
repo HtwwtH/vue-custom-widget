@@ -17,7 +17,7 @@
       <template #item="{ element }">
         <component
           class="draggable"
-          :is="{...element.type}"
+          :is="element.type"
           v-bind="{id: element.id}"
           :key="element.id"
           @removeWidget="removeWidget"
@@ -47,7 +47,6 @@
 <script>
 import { Sortable } from 'sortablejs-vue3'
 import { ref, computed } from 'vue'
-import draggable from 'vuedraggable'
 import WidgetMenu from '@/components/WidgetMenu.vue'
 
 import { useWidget } from '@/hooks/useWidget'
@@ -57,7 +56,6 @@ export default {
 
   components: {
     Sortable,
-    draggable,
     WidgetMenu
   },
 
@@ -88,11 +86,15 @@ export default {
     })
 
     const onEnd = (evt) => {
-      moveWidget(evt.oldIndex, evt.newIndex)
+      console.log('evt ', evt)
+      console.log('oldDraggableIndex ', evt.oldDraggableIndex)
+      console.log('newDraggableIndex ', evt.newDraggableIndex)
+      moveWidget(evt.oldDraggableIndex, evt.newDraggableIndex)
     }
 
     return {
       drag,
+      options,
       widgets,
       widgetMenuVisible,
       openWidgetMenu,
@@ -101,8 +103,7 @@ export default {
       addWidget,
       moveWidget,
       removeWidget,
-      onEnd,
-      options
+      onEnd
     }
   }
 }
@@ -159,40 +160,21 @@ export default {
     &__content {
       display: flex;
     }
-
-      .fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.35s ease;
-}
-
-.fade-enter-from,
-.fade-leave-active {
-  opacity: 0;
-}
   }
-        .fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.35s ease;
-}
 
-.fade-enter-from,
-.fade-leave-active {
-  opacity: 0;
-}
-
-.draggable {
-  background: #fff;
-  padding: 10px;
-  margin: 10px;
-  border: 1px solid #ccc;
-  cursor: move;
-}
-.ghost {
-  opacity: 0.5;
-  background: #fff;
-  border: 1px dashed #ccc;
-}
-.drag {
-  background: #f5f5f5;
-}
+  .draggable {
+    background: #fff;
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #ccc;
+    cursor: move;
+  }
+  .ghost {
+    opacity: 0.5;
+    background: #fff;
+    border: 1px dashed #ccc;
+  }
+  .drag {
+    background: #f5f5f5;
+  }
 </style>
