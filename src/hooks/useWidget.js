@@ -34,8 +34,6 @@ export function useWidget () {
         id: widgetsCounter.value++
       })
     }
-
-    console.log(widgets.value)
   }
 
   const removeWidget = (id) => {
@@ -47,25 +45,11 @@ export function useWidget () {
       item.id = i
       return item
     })
-
-    console.log(widgets.value)
   }
 
   const moveWidget = (from, to) => {
-    console.log('from to', from, to)
-
     const item = widgets.value.splice(from, 1)[0]
-
-    console.log('item', item)
-
     widgets.value.splice(to, 0, item)
-
-    // widgets.value.map((item, i) => {
-    //   item.id = i
-    //   return item
-    // })
-
-    console.log(widgets.value)
   }
 
   return { widgets, addWidget, moveWidget, removeWidget }

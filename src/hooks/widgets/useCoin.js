@@ -7,11 +7,12 @@ export function useCoin () {
   const converted = ref('...')
 
   const getConvertedResult = async () => {
-    await getConverted(convertTo.value, selected.value).then((response) => {
-      converted.value = response.data.result
-    }, (error) => {
-      console.error(error)
-    })
+    const res = await getConverted(convertTo.value, selected.value)
+    if (res && res.status === 200) {
+      converted.value = res.data.result
+    } else {
+      converted.value = 'Error'
+    }
   }
 
   return { selected, convertTo, converted, getConvertedResult }

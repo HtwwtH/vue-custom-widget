@@ -62,6 +62,7 @@ import { ref, onMounted } from 'vue'
 import DeleteIcon from '@/assets/icons/delete-icon.svg'
 import { useWeather } from '@/hooks/widgets/useWeather'
 import { Circle2 } from 'vue-loading-spinner'
+import cities from '@/helpers/static/cities'
 
 export default {
   name: 'WeatherWidget',
@@ -77,7 +78,7 @@ export default {
   },
 
   setup (props, { emit }) {
-    const { selected, temperature, iconId, weatherImg, cities, getWeather } = useWeather()
+    const { selected, temperature, iconId, weatherImg, getWeather } = useWeather()
 
     const mounted = ref(false)
     const isLoading = ref(true)

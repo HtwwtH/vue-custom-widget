@@ -8,28 +8,36 @@
     </div>
 
     <draggable
-      class="widget-main__content"
-      :list="widgets"
+      v-model="widgets"
+      animation="300"
+      drag-class="drag"
+      ghost-class="ghost"
+      easing="cubic-bezier(1, 0, 0, 1)"
       @change="onChange"
       @end="onEnd"
+      class="widget-main__content"
     >
-      <div
-        v-for="(element) in widgets"
-        :key="element.createdAt"
+      <transition-group
+        name="fade"
       >
-      <component
-        class="draggable"
-        :is="element.type"
-        :id="element.id"
-        @removeWidget="removeWidget"
-      ></component>
-      </div>
+        <div
+          v-for="(element) in widgets"
+          :key="element.createdAt"
+        >
+          <component
+            class="draggable"
+            :is="element.type"
+            :id="element.id"
+            @removeWidget="removeWidget"
+          ></component>
+        </div>
+      </transition-group>
     </draggable>
 
     <div class="widget-main__add">
       <button
         title="Add a widget"
-        @click="openWidgetMenu"
+        @click="openMenu"
         class="widget-main__button"
       >
         +
@@ -47,9 +55,8 @@
 
 <script>
 import { VueDraggableNext } from 'vue-draggable-next'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import WidgetMenu from '@/components/WidgetMenu.vue'
-
 import { useWidget } from '@/hooks/useWidget'
 
 export default {
@@ -63,10 +70,6 @@ export default {
     const drag = ref(false)
     const widgetMenuVisible = ref(false)
 
-    function openWidgetMenu () {
-      openMenu()
-    }
-
     const openMenu = () => {
       widgetMenuVisible.value = true
     }
@@ -74,15 +77,6 @@ export default {
     const closeMenu = () => {
       widgetMenuVisible.value = false
     }
-
-    const options = computed(() => {
-      return {
-        draggable: '.draggable',
-        animation: 150,
-        ghostClass: 'ghost',
-        dragClass: 'drag'
-      }
-    })
 
     // it's a hack because of #28 issue
     let theFirstMove = true
@@ -102,10 +96,8 @@ export default {
 
     return {
       drag,
-      options,
       widgets,
       widgetMenuVisible,
-      openWidgetMenu,
       openMenu,
       closeMenu,
       addWidget,
@@ -180,12 +172,23 @@ export default {
     border: 1px solid #ccc;
     cursor: move;
   }
+  .drag {
+    background: #f5f5f5;
+  }
   .ghost {
     opacity: 0.5;
     background: #fff;
-    border: 1px dashed #ccc;
   }
-  .drag {
-    background: #f5f5f5;
+
+  .fade-item {
+    display: inline-block;
+    margin-right: 10px;
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition: all .5s;
+  }
+  .fade-enter, .fade-leave-to /* .list-leave-active до версии 2.1.8 */ {
+    opacity: 0;
+    transform: translateY(30px);
   }
 </style>
