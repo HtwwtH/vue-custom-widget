@@ -12,7 +12,8 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useTime } from '@/hooks/widgets/useTime'
 
 export default {
   name: 'TimeClock',
@@ -22,23 +23,40 @@ export default {
   },
 
   setup (props) {
+    const { timeError } = useTime()
+
     const hours = ref(0)
     const minutes = ref(0)
     const seconds = ref(0)
+    let setIntervalId = null
+
+    const setError = (err) => {
+      console.error(err)
+      timeError.value = true
+      clearInterval(setIntervalId)
+    }
 
     const convertTimezone = (date) => {
-      return new Date((new Date(date)).toLocaleString('en-US', { timeZone: props.timezone }))
+      try {
+        return new Date((new Date(date)).toLocaleString('en-US', { timeZone: props.timezone }))
+      } catch (err) {
+        setError(err)
+      }
     }
 
     const setTime = () => {
-      setInterval(() => {
-        let date = new Date()
-        date = convertTimezone(date)
+      try {
+        setIntervalId = setInterval(() => {
+          let date = new Date()
+          date = convertTimezone(date)
 
-        hours.value = date.getHours()
-        minutes.value = checkSingleDigit(date.getMinutes())
-        seconds.value = checkSingleDigit(date.getSeconds())
-      }, 1000)
+          hours.value = date.getHours()
+          minutes.value = checkSingleDigit(date.getMinutes())
+          seconds.value = checkSingleDigit(date.getSeconds())
+        }, 1000)
+      } catch (err) {
+        setError(err)
+      }
     }
 
     const checkSingleDigit = (digit) => {
@@ -47,6 +65,10 @@ export default {
 
     onMounted(() => {
       setTime()
+    })
+
+    onUnmounted(() => {
+      clearInterval(setIntervalId)
     })
 
     return {

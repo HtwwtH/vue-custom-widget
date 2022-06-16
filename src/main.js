@@ -1,5 +1,5 @@
 import { defineCustomElement } from './defineCustomElementWithStyles' // way to apply subcomponents styles
-import CustomWidget from './AppWidg.vue'
+import CustomWidget from './AppWidget.vue'
 
 const element = defineCustomElement(CustomWidget)
 

@@ -1,33 +1,45 @@
 <template>
   <div class="widget-main">
-    <div
-      v-if="!widgets.length"
-      class="widget-main__placeholder"
-    >
-      Add a widget...
-    </div>
+    <transition name="fadein">
+      <div
+        v-if="isPlaceholderVisible"
+        class="widget-main__placeholder"
+      >
+        Add a widget...
+      </div>
+    </transition>
 
-    <Sortable
-      :list="widgets"
-      :options="options"
-      item-key="createdAt"
-      class="widget-main__content"
+    <draggable
+      v-model="widgets"
+      animation="300"
+      drag-class="drag"
+      ghost-class="ghost"
+      easing="cubic-bezier(1, 0, 0, 1)"
+      @change="onChange"
       @end="onEnd"
+      class="widget-main__content"
     >
-      <template #item="{ element }">
-        <component
-          class="draggable"
-          :is="element.type"
-          :id="element.id"
-          @removeWidget="removeWidget"
-        ></component>
-      </template>
-    </Sortable>
+      <transition-group
+        name="fade"
+      >
+        <div
+          v-for="(element) in widgets"
+          :key="element.createdAt"
+        >
+          <component
+            class="draggable"
+            :is="element.type"
+            :id="element.id"
+            @removeWidget="removeWidget"
+          ></component>
+        </div>
+      </transition-group>
+    </draggable>
 
     <div class="widget-main__add">
       <button
         title="Add a widget"
-        @click="openWidgetMenu"
+        @click="openMenu"
         class="widget-main__button"
       >
         +
@@ -44,17 +56,14 @@
 </template>
 
 <script>
-import { Sortable } from 'sortablejs-vue3'
-import { ref, computed } from 'vue'
+import { VueDraggableNext } from 'vue-draggable-next'
+import { ref, computed, watch } from 'vue'
 import WidgetMenu from '@/components/WidgetMenu.vue'
-
 import { useWidget } from '@/hooks/useWidget'
 
 export default {
-  name: 'AppWidget',
-
   components: {
-    Sortable,
+    draggable: VueDraggableNext,
     WidgetMenu
   },
 
@@ -63,9 +72,17 @@ export default {
     const drag = ref(false)
     const widgetMenuVisible = ref(false)
 
-    function openWidgetMenu () {
-      openMenu()
-    }
+    const isPlaceholderVisible = ref(true)
+    const isArrEmpty = computed(() => widgets.value.length === 0)
+
+    watch(() => isArrEmpty.value,
+      (val, prevVal) => {
+        if (prevVal === true) {
+          isPlaceholderVisible.value = false
+        } else {
+          setTimeout(() => { isPlaceholderVisible.value = true }, 500)
+        }
+      })
 
     const openMenu = () => {
       widgetMenuVisible.value = true
@@ -75,30 +92,33 @@ export default {
       widgetMenuVisible.value = false
     }
 
-    const options = computed(() => {
-      return {
-        draggable: '.draggable',
-        animation: 150,
-        ghostClass: 'ghost',
-        dragClass: 'drag'
+    // it's a hack because of #28 issue
+    let theFirstMove = true
+
+    const onChange = (evt) => {
+      if (!theFirstMove) {
+        moveWidget(evt.oldIndex, evt.newIndex)
       }
-    })
+    }
 
     const onEnd = (evt) => {
-      moveWidget(evt.oldDraggableIndex, evt.newDraggableIndex)
+      if (theFirstMove) {
+        moveWidget(evt.oldIndex, evt.newIndex)
+        theFirstMove = false
+      }
     }
 
     return {
       drag,
-      options,
       widgets,
+      isPlaceholderVisible,
       widgetMenuVisible,
-      openWidgetMenu,
       openMenu,
       closeMenu,
       addWidget,
       moveWidget,
       removeWidget,
+      onChange,
       onEnd
     }
   }
@@ -167,12 +187,42 @@ export default {
     border: 1px solid #ccc;
     cursor: move;
   }
+  .drag {
+    background: #f5f5f5;
+  }
   .ghost {
     opacity: 0.5;
     background: #fff;
-    border: 1px dashed #ccc;
   }
-  .drag {
-    background: #f5f5f5;
+
+  .fade-item {
+    display: inline-block;
+    margin-right: 10px;
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition: all .5s;
+  }
+  .fade-enter, .fade-leave-to {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  .fadein-enter-active {
+    animation: placeholder-animation 0.5s;
+
+    .inner {
+      transition-delay: 0.5s;
+    }
+  }
+
+  @keyframes placeholder-animation {
+    from {
+      opacity: 0;
+      transform: translateY(-80px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 </style>

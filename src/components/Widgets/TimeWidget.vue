@@ -1,6 +1,9 @@
 <template>
   <transition name='fade'>
-    <div class="time widget">
+    <div
+      class="time widget"
+      :class="{'widget--error': timeError}"
+      >
       <div class="widget__header">
         <button
           class='widget__delete'
@@ -82,7 +85,7 @@ export default {
   },
 
   setup (props, { emit }) {
-    const { selected } = useTime()
+    const { selected, timeError } = useTime()
 
     const onDeleteClick = () => emit('removeWidget', props.id)
     const mounted = ref(false)
@@ -99,6 +102,7 @@ export default {
 
     return {
       DeleteIcon,
+      timeError,
       isLoading,
       onDeleteClick,
       onChangeTimezone,
