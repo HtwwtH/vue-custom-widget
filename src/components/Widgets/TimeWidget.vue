@@ -39,6 +39,16 @@
             {{ timezone }}
             </option>
         </select>
+        <button
+          class='widget__delete'
+          title='delete widget'
+          @click.stop='onDeleteClick'
+        >
+          <img
+            :src='DeleteIcon'
+            alt='delete widget'
+          >
+        </button>
 
         <p class='widget__subtitle'>Time here is:</p>
 
@@ -55,6 +65,7 @@ import DeleteIcon from '@/assets/icons/delete-icon.svg'
 import TimeClock from '@/components/TimeClock.vue'
 import { Circle2 } from 'vue-loading-spinner'
 import { useTime } from '@/hooks/widgets/useTime'
+import timezones from '@/helpers/static/timezones'
 
 export default {
   name: 'TimeWidget',
@@ -71,7 +82,7 @@ export default {
   },
 
   setup (props, { emit }) {
-    const { selected, timezones, getTimezones } = useTime()
+    const { selected } = useTime()
 
     const onDeleteClick = () => emit('removeWidget', props.id)
     const mounted = ref(false)
@@ -79,7 +90,6 @@ export default {
 
     onMounted(async () => {
       mounted.value = true
-      await getTimezones()
       isLoading.value = false
     })
 

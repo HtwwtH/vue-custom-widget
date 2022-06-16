@@ -7,22 +7,24 @@
       Add a widget...
     </div>
 
-    <Sortable
-      :list="widgets"
-      :options="options"
-      item-key="createdAt"
+    <draggable
       class="widget-main__content"
+      :list="widgets"
+      @change="onChange"
       @end="onEnd"
     >
-      <template #item="{ element }">
-        <component
-          class="draggable"
-          :is="element.type"
-          :id="element.id"
-          @removeWidget="removeWidget"
-        ></component>
-      </template>
-    </Sortable>
+      <div
+        v-for="(element) in widgets"
+        :key="element.createdAt"
+      >
+      <component
+        class="draggable"
+        :is="element.type"
+        :id="element.id"
+        @removeWidget="removeWidget"
+      ></component>
+      </div>
+    </draggable>
 
     <div class="widget-main__add">
       <button
@@ -44,17 +46,15 @@
 </template>
 
 <script>
-import { Sortable } from 'sortablejs-vue3'
+import { VueDraggableNext } from 'vue-draggable-next'
 import { ref, computed } from 'vue'
 import WidgetMenu from '@/components/WidgetMenu.vue'
 
 import { useWidget } from '@/hooks/useWidget'
 
 export default {
-  name: 'AppWidget',
-
   components: {
-    Sortable,
+    draggable: VueDraggableNext,
     WidgetMenu
   },
 
@@ -84,8 +84,20 @@ export default {
       }
     })
 
+    // it's a hack because of #28 issue
+    let theFirstMove = true
+
+    const onChange = (evt) => {
+      if (!theFirstMove) {
+        moveWidget(evt.oldIndex, evt.newIndex)
+      }
+    }
+
     const onEnd = (evt) => {
-      moveWidget(evt.oldDraggableIndex, evt.newDraggableIndex)
+      if (theFirstMove) {
+        moveWidget(evt.oldIndex, evt.newIndex)
+        theFirstMove = false
+      }
     }
 
     return {
@@ -99,6 +111,7 @@ export default {
       addWidget,
       moveWidget,
       removeWidget,
+      onChange,
       onEnd
     }
   }

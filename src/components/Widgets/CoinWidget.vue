@@ -66,6 +66,7 @@ import { ref, onMounted } from 'vue'
 import DeleteIcon from '@/assets/icons/delete-icon.svg'
 import { useCoin } from '@/hooks/widgets/useCoin'
 import { Circle2 } from 'vue-loading-spinner'
+import symbols from '@/helpers/static/symbols.json'
 
 export default {
   name: 'CoinWidget',
@@ -81,7 +82,7 @@ export default {
   },
 
   setup (props, { emit }) {
-    const { selected, convertTo, converted, symbols, getSymbolsList, getConvertedResult } = useCoin()
+    const { selected, convertTo, converted, getConvertedResult } = useCoin()
     const mounted = ref(false)
     const isLoading = ref(true)
 
@@ -89,7 +90,6 @@ export default {
 
     onMounted(async () => {
       mounted.value = true
-      await getSymbolsList()
       await getConvertedResult()
       isLoading.value = false
     })

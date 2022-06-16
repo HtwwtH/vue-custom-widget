@@ -7,10 +7,6 @@ const instance = axios.create({
   }
 })
 
-export const getSymbols = async () => {
-  return await instance.get('/symbols')
-}
-
 export const getConverted = async (to, from) => {
   return await instance.get(`/convert?to=${to}&from=${from}&amount=1`)
 }
