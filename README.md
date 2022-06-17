@@ -14,6 +14,10 @@
 
 ![Screenshot](https://github.com/HtwwtH/vue-custom-widget/blob/main/Screenshot2.png)
 
+### On mobile move by moving icon:
+
+![Screenshot](https://github.com/HtwwtH/vue-custom-widget/blob/main/Screenshot3.png)
+
 ## Project setup
 ```
 npm install
