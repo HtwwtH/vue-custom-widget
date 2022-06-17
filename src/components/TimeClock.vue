@@ -86,8 +86,12 @@ export default {
   .container {
     margin: 12px auto 0;
   }
-  .hour, .min, .secs {
+  .hour, .min, .secs, .dots {
     font-size: 24px;
+
+    @include mobile {
+      font-size: 18px;
+    }
   }
   p {
     font-family: 'Lucida Sans', sans-serif;
@@ -104,8 +108,10 @@ export default {
     background: $dark-blue;
     border-radius: 12px;
     color: $white;
-  }
-  .dots {
-    font-size: 24px;
+
+    @include mobile {
+      width: 120px;
+      height: 34px;
+    }
   }
 </style>

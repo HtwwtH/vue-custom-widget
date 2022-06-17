@@ -8,7 +8,6 @@
         class='widget__delete'
         title='delete widget'
         @click='onDeleteClick'
-        @touchstart='onDeleteClick'
       >
         <img
           :src='DeleteIcon'
@@ -46,7 +45,7 @@
       <p class='widget__subtitle'>Convert to:</p>
       <select
         name='select-coin'
-        class='coin__form'
+        class='coin__select'
         :value="convertTo"
         @change="onChangeConvertTo"
       >
@@ -136,6 +135,12 @@ export default {
     &__converter {
       margin: 8px auto 0;
       font-size: 14px;
+    }
+
+    &__select {
+      @include mobile {
+        height: 28px;
+      }
     }
   }
 </style>

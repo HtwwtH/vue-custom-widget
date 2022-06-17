@@ -37,8 +37,7 @@ export function useWidget () {
   }
 
   const removeWidget = (id) => {
-    const removeIndex = widgets.value.map((item) => { return item.id }).indexOf(id)
-    widgets.value.splice(removeIndex, 1)
+    widgets.value = widgets.value.filter(item => item.id !== id)
     widgetsCounter.value = widgets.value.length
 
     widgets.value.map((item, i) => {

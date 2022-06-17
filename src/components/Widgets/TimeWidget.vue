@@ -7,8 +7,7 @@
       <button
         class='widget__delete'
         title='delete widget'
-        @click='onDeleteClick'
-        @touchstart='onDeleteClick'
+        @click="onDeleteClick"
       >
         <img
           :src='DeleteIcon'
@@ -31,7 +30,7 @@
 
       <select
         name='select-city'
-        class='city__select'
+        class='time__select'
         :value="selected"
         @change="onChangeTimezone"
       >
@@ -81,6 +80,11 @@ export default {
       emit('removeWidget', props.id)
     }
 
+    const handlers = {
+      mousedown: onDeleteClick,
+      touchstart: onDeleteClick
+    }
+
     const isLoading = ref(true)
 
     onMounted(async () => {
@@ -92,6 +96,7 @@ export default {
     }
 
     return {
+      handlers,
       DeleteIcon,
       timeError,
       isLoading,
@@ -108,5 +113,11 @@ export default {
   .time {
     width: 249px;
     height: 163px;
+
+    &__select {
+      @include mobile {
+        height: 36px;
+      }
+    }
   }
 </style>

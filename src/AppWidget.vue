@@ -15,6 +15,7 @@
       drag-class="drag"
       ghost-class="ghost"
       easing="cubic-bezier(1, 0, 0, 1)"
+      :handle="mobileScreen ? '.handle' : ''"
       @change="onChange"
       @end="onEnd"
       class="widget-main__content"
@@ -23,9 +24,13 @@
         name="fade"
       >
         <div
+          class="handle-wrapper"
           v-for="(element) in widgets"
           :key="element.createdAt"
         >
+          <div v-if="mobileScreen" class="handle">
+            <img src="@/assets/icons/menu.png" alt="">
+          </div>
           <component
             class="draggable"
             :is="element.type"
@@ -40,7 +45,6 @@
       <button
         title="Add a widget"
         @click="openMenu"
-        @touchstart="openMenu"
         class="widget-main__button"
       >
         +
@@ -58,7 +62,7 @@
 
 <script>
 import { VueDraggableNext } from 'vue-draggable-next'
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import WidgetMenu from '@/components/WidgetMenu.vue'
 import { useWidget } from '@/hooks/useWidget'
 
@@ -70,11 +74,24 @@ export default {
 
   setup () {
     const { widgets, addWidget, moveWidget, removeWidget } = useWidget()
+    const mobileScreen = ref(false)
     const drag = ref(false)
     const widgetMenuVisible = ref(false)
 
     const isPlaceholderVisible = ref(true)
     const isArrEmpty = computed(() => widgets.value.length === 0)
+
+    const updateWidth = (size) => {
+      mobileScreen.value = size
+    }
+
+    onMounted(() => {
+      window.addEventListener('resize', updateWidth(window.innerWidth <= 768))
+    })
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', updateWidth(window.innerWidth <= 768))
+    })
 
     watch(() => isArrEmpty.value,
       (val, prevVal) => {
@@ -103,7 +120,7 @@ export default {
     }
 
     const onEnd = (evt) => {
-      if (theFirstMove) {
+      if (theFirstMove && widgets.value[evt.oldIndex]) {
         moveWidget(evt.oldIndex, evt.newIndex)
         theFirstMove = false
       }
@@ -111,6 +128,7 @@ export default {
 
     return {
       drag,
+      mobileScreen,
       widgets,
       isPlaceholderVisible,
       widgetMenuVisible,
@@ -227,6 +245,21 @@ export default {
 
     .inner {
       transition-delay: 0.5s;
+    }
+  }
+
+  .handle-wrapper {
+    @include mobile {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .handle {
+    width: 24px;
+
+    img {
+      width: 100%;
     }
   }
 

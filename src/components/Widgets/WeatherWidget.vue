@@ -8,7 +8,6 @@
         class='widget__delete'
         title='delete widget'
         @click='onDeleteClick'
-        @touchstart='onDeleteClick'
       >
         <img
           :src='DeleteIcon'
@@ -30,8 +29,8 @@
       <p class='widget__subtitle'>Check the city:</p>
 
       <select
-        name='select-city'
-        class='city__select'
+        name='select-weather'
+        class='weather__select'
         :value="selected"
         @change="onChangeCity"
       >
@@ -130,6 +129,12 @@ export default {
 
       img {
         width: 64px;
+      }
+    }
+
+    &__select {
+      @include mobile {
+        height: 28px;
       }
     }
   }
