@@ -7,5 +7,6 @@ const instance = axios.create({
 export const getCityWeather = (id) => {
   return instance.get(`/forecast?id=${id}&appid=${process.env.VUE_APP_WEATHER_API_KEY}&units=metric`).catch(e => {
     console.error(e)
+    return e
   })
 }

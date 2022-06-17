@@ -26,6 +26,9 @@
     &:after {
       content: 'Error';
       color: $red;
+      font-size: 12px;
+      position: absolute;
+      bottom: 0;
     }
   }
 

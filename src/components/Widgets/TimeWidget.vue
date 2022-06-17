@@ -1,65 +1,63 @@
 <template>
-  <transition name='fade'>
-    <div
-      class="time widget"
-      :class="{'widget--error': timeError}"
+  <div
+    class="time widget"
+    :class="{'widget--error': timeError}"
+    >
+    <div class="widget__header">
+      <button
+        class='widget__delete'
+        title='delete widget'
+        @click='onDeleteClick'
       >
-      <div class="widget__header">
-        <button
-          class='widget__delete'
-          title='delete widget'
-          @click='onDeleteClick'
+        <img
+          :src='DeleteIcon'
+          alt='delete widget'
         >
-          <img
-            :src='DeleteIcon'
-            alt='delete widget'
-          >
-        </button>
+      </button>
 
-        <p class="widget__title">Time</p>
-      </div>
-
-      <div
-        v-if="isLoading"
-        class="loader"
-      >
-        <circle2 :background="'#93c2ff'" :color="'#fff'"/>
-      </div>
-
-      <div v-else class="widget__content">
-        <p class='widget__subtitle'>Check the timezone:</p>
-
-        <select
-          name='select-city'
-          class='city__select'
-          :value="selected"
-          @change="onChangeTimezone"
-        >
-          <option
-            v-for="(timezone) in timezones"
-            :key="timezone"
-          >
-            {{ timezone }}
-            </option>
-        </select>
-        <button
-          class='widget__delete'
-          title='delete widget'
-          @click.stop='onDeleteClick'
-        >
-          <img
-            :src='DeleteIcon'
-            alt='delete widget'
-          >
-        </button>
-
-        <p class='widget__subtitle'>Time here is:</p>
-
-        <time-clock :timezone="selected"/>
-
-      </div>
+      <p class="widget__title">Time</p>
     </div>
-  </transition>
+
+    <div
+      v-if="isLoading"
+      class="loader"
+    >
+      <circle2 :background="'#93c2ff'" :color="'#fff'"/>
+    </div>
+
+    <div v-else class="widget__content">
+      <p class='widget__subtitle'>Check the timezone:</p>
+
+      <select
+        name='select-city'
+        class='city__select'
+        :value="selected"
+        @change="onChangeTimezone"
+      >
+        <option
+          v-for="(timezone) in timezones"
+          :key="timezone"
+        >
+          {{ timezone }}
+          </option>
+      </select>
+      <button
+        class='widget__delete'
+        title='delete widget'
+        @click.stop='onDeleteClick'
+      >
+        <img
+          :src='DeleteIcon'
+          alt='delete widget'
+        >
+      </button>
+
+      <p class='widget__subtitle'>Time here is:</p>
+
+      <time-clock :timezone="selected"/>
+
+    </div>
+  </div>
 </template>
 
 <script>
@@ -85,14 +83,16 @@ export default {
   },
 
   setup (props, { emit }) {
-    const { selected, timeError } = useTime()
+    const { selected, timeError, clearErrors } = useTime()
 
-    const onDeleteClick = () => emit('removeWidget', props.id)
-    const mounted = ref(false)
+    const onDeleteClick = () => {
+      clearErrors()
+      emit('removeWidget', props.id)
+    }
+
     const isLoading = ref(true)
 
     onMounted(async () => {
-      mounted.value = true
       isLoading.value = false
     })
 

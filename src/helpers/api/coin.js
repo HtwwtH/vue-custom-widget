@@ -10,5 +10,6 @@ const instance = axios.create({
 export const getConverted = (to, from) => {
   return instance.get(`/convert?to=${to}&from=${from}&amount=1`).catch(e => {
     console.error(e)
+    return e
   })
 }

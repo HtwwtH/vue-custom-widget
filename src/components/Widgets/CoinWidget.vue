@@ -1,64 +1,65 @@
 <template>
-  <transition name='fade'>
-    <div v-if='mounted' class='coin widget'>
-      <div class="widget__header">
-        <button
-          class='widget__delete'
-          title='delete widget'
-          @click='onDeleteClick'
-        >
-          <img
-            :src='DeleteIcon'
-            alt='delete widget'
-          >
-        </button>
-
-        <p class='widget__title'>Exchange rate</p>
-      </div>
-
-      <div
-        v-if="isLoading"
-        class="loader"
+  <div
+    class='coin widget'
+    :class="{'widget--error': coinError}"
+  >
+    <div class="widget__header">
+      <button
+        class='widget__delete'
+        title='delete widget'
+        @click='onDeleteClick'
       >
-        <circle2 :background="'#93c2ff'" :color="'#fff'"/>
-      </div>
-
-      <div v-else class="widget__content">
-
-        <p class='widget__subtitle'>Check the currency:</p>
-        <select
-          name='select-coin'
-          class='coin__select'
-          :value="selected"
-          @change="onChangeSelected"
+        <img
+          :src='DeleteIcon'
+          alt='delete widget'
         >
-          <option
-            v-for="(value, name) in symbols"
-            :key="value"
-          >
-            {{ name }}
-            </option>
-        </select>
+      </button>
 
-        <p class='widget__subtitle'>Convert to:</p>
-        <select
-          name='select-coin'
-          class='coin__form'
-          :value="convertTo"
-          @change="onChangeConvertTo"
-        >
-          <option
-            v-for="(value, name) in symbols"
-            :key="value"
-          >
-            {{ name }}
-            </option>
-        </select>
-
-        <p class='coin__converter'>1 {{ selected }} = {{ converted }} {{ convertTo }}</p>
-      </div>
+      <p class='widget__title'>Exchange rate</p>
     </div>
-  </transition>
+
+    <div
+      v-if="isLoading"
+      class="loader"
+    >
+      <circle2 :background="'#93c2ff'" :color="'#fff'"/>
+    </div>
+
+    <div v-else class="widget__content">
+
+      <p class='widget__subtitle'>Check the currency:</p>
+      <select
+        name='select-coin'
+        class='coin__select'
+        :value="selected"
+        @change="onChangeSelected"
+      >
+        <option
+          v-for="(value, name) in symbols"
+          :key="value"
+        >
+          {{ name }}
+          </option>
+      </select>
+
+      <p class='widget__subtitle'>Convert to:</p>
+      <select
+        name='select-coin'
+        class='coin__form'
+        :value="convertTo"
+        @change="onChangeConvertTo"
+      >
+        <option
+          v-for="(value, name) in symbols"
+          :key="value"
+        >
+          {{ name }}
+          </option>
+      </select>
+
+      <p class='coin__converter'>1 {{ selected }} = {{ converted }} {{ convertTo }}</p>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -82,14 +83,15 @@ export default {
   },
 
   setup (props, { emit }) {
-    const { selected, convertTo, converted, getConvertedResult } = useCoin()
-    const mounted = ref(false)
+    const { selected, convertTo, converted, getConvertedResult, coinError, clearErrors } = useCoin()
     const isLoading = ref(true)
 
-    const onDeleteClick = () => emit('removeWidget', props.id)
+    const onDeleteClick = () => {
+      clearErrors()
+      emit('removeWidget', props.id)
+    }
 
     onMounted(async () => {
-      mounted.value = true
       await getConvertedResult()
       isLoading.value = false
     })
@@ -105,7 +107,6 @@ export default {
     }
 
     return {
-      mounted,
       isLoading,
       DeleteIcon,
       symbols,
@@ -114,7 +115,8 @@ export default {
       converted,
       onDeleteClick,
       onChangeSelected,
-      onChangeConvertTo
+      onChangeConvertTo,
+      coinError
     }
   }
 }

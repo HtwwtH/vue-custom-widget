@@ -14,6 +14,7 @@
 <script>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useTime } from '@/hooks/widgets/useTime'
+import ErrorService from '@/helpers/services/errorService'
 
 export default {
   name: 'TimeClock',
@@ -33,6 +34,7 @@ export default {
     const setError = (err) => {
       console.error(err)
       timeError.value = true
+      ErrorService.onError(err)
       clearInterval(setIntervalId)
     }
 
@@ -45,18 +47,18 @@ export default {
     }
 
     const setTime = () => {
-      try {
-        setIntervalId = setInterval(() => {
+      setIntervalId = setInterval(() => {
+        try {
           let date = new Date()
           date = convertTimezone(date)
 
           hours.value = date.getHours()
           minutes.value = checkSingleDigit(date.getMinutes())
           seconds.value = checkSingleDigit(date.getSeconds())
-        }, 1000)
-      } catch (err) {
-        setError(err)
-      }
+        } catch (err) {
+          setError(err)
+        }
+      }, 1000)
     }
 
     const checkSingleDigit = (digit) => {

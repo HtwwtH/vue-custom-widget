@@ -1,60 +1,61 @@
 <template>
-  <transition name='fade'>
-    <div v-if="mounted" class="weather widget">
-      <div class="widget__header">
-        <button
-          class='widget__delete'
-          title='delete widget'
-          @click='onDeleteClick'
-        >
-          <img
-            :src='DeleteIcon'
-            alt='delete widget'
-          >
-        </button>
-
-        <p class='widget__title'>Weather</p>
-      </div>
-
-      <div
-        v-if="isLoading"
-        class="loader"
+  <div
+    class="weather widget"
+    :class="{'widget--error': weatherError}"
+  >
+    <div class="widget__header">
+      <button
+        class='widget__delete'
+        title='delete widget'
+        @click='onDeleteClick'
       >
-        <circle2 :background="'#93c2ff'" :color="'#fff'"/>
-      </div>
-
-      <div v-else class="widget__content">
-        <p class='widget__subtitle'>Check the city:</p>
-
-        <select
-          name='select-city'
-          class='city__select'
-          :value="selected"
-          @change="onChangeCity"
+        <img
+          :src='DeleteIcon'
+          alt='delete widget'
         >
-          <option
-            v-for="(id, city) in cities"
-            :key="id"
-          >
-            {{ city }}
-            </option>
-        </select>
+      </button>
 
-        <div class="weather__temperature">
-          {{ temperature }}°
-        </div>
-
-        <div class="weather__image">
-          <img
-            v-if="iconId"
-            class="weather__icon"
-            :src="weatherImg" alt="weather icon"
-          >
-        </div>
-
-      </div>
+      <p class='widget__title'>Weather</p>
     </div>
-  </transition>
+
+    <div
+      v-if="isLoading"
+      class="loader"
+    >
+      <circle2 :background="'#93c2ff'" :color="'#fff'"/>
+    </div>
+
+    <div v-else class="widget__content">
+      <p class='widget__subtitle'>Check the city:</p>
+
+      <select
+        name='select-city'
+        class='city__select'
+        :value="selected"
+        @change="onChangeCity"
+      >
+        <option
+          v-for="(id, city) in cities"
+          :key="id"
+        >
+          {{ city }}
+          </option>
+      </select>
+
+      <div class="weather__temperature">
+        {{ temperature }}°
+      </div>
+
+      <div class="weather__image">
+        <img
+          v-if="iconId"
+          class="weather__icon"
+          :src="weatherImg" alt="weather icon"
+        >
+      </div>
+
+    </div>
+  </div>
 </template>
 
 <script>
@@ -78,15 +79,16 @@ export default {
   },
 
   setup (props, { emit }) {
-    const { selected, temperature, iconId, weatherImg, getWeather } = useWeather()
+    const { selected, temperature, iconId, weatherImg, getWeather, weatherError, clearErrors } = useWeather()
 
-    const mounted = ref(false)
     const isLoading = ref(true)
 
-    const onDeleteClick = () => emit('removeWidget', props.id)
+    const onDeleteClick = () => {
+      clearErrors()
+      emit('removeWidget', props.id)
+    }
 
     onMounted(async () => {
-      mounted.value = true
       await getWeather()
       isLoading.value = false
     })
@@ -97,7 +99,6 @@ export default {
     }
 
     return {
-      mounted,
       isLoading,
       DeleteIcon,
       selected,
@@ -106,7 +107,8 @@ export default {
       iconId,
       weatherImg,
       onChangeCity,
-      onDeleteClick
+      onDeleteClick,
+      weatherError
     }
   }
 }
