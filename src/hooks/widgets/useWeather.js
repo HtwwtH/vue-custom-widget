@@ -10,7 +10,7 @@ export function useWeather () {
   const weatherError = ref(false)
 
   const weatherImg = computed(() => {
-    return `http://openweathermap.org/img/wn/${iconId.value}@2x.png` || ''
+    return `https://openweathermap.org/img/wn/${iconId.value}@2x.png` || ''
   })
 
   const getWeather = async () => {
