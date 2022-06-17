@@ -7,7 +7,7 @@
       <button
         class='widget__delete'
         title='delete widget'
-        @click='onDeleteClick'
+        @click.stop='onDeleteClick'
       >
         <img
           :src='DeleteIcon'

@@ -138,6 +138,10 @@ export default {
     display: flex;
     align-items: center;
 
+    @include mobile {
+      flex-direction: column;
+    }
+
     &__placeholder {
       margin-right: 12px;
 
@@ -148,6 +152,10 @@ export default {
 
     &__add {
       position: relative;
+
+      @include mobile {
+        margin-top: 12px;
+      }
     }
 
     &__button {
@@ -177,22 +185,28 @@ export default {
     &__content {
       display: flex;
       flex-wrap: wrap;
+
+      @include mobile {
+        flex-direction: column;
+      }
     }
   }
 
   .draggable {
-    background: #fff;
+    background: $white;
     padding: 10px;
     margin: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid $gray;
     cursor: move;
   }
   .drag {
-    background: #f5f5f5;
+    background: $dark-blue;
+    border-radius: 4px;
   }
   .ghost {
     opacity: 0.5;
-    background: #fff;
+    background: $dark-blue;
+    border-radius: 4px;
   }
 
   .fade-item {
