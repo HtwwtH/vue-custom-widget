@@ -73,6 +73,14 @@ export default {
       padding: 8px 16px;
       transition: $transition;
 
+      @include mobile {
+        padding: 12px 16px;
+
+        &:not(:last-child) {
+          border-bottom: 1px solid $gray;
+        }
+      }
+
       &:hover {
         background-color: $gray;
       }

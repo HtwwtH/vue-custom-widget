@@ -40,6 +40,7 @@
       <button
         title="Add a widget"
         @click="openMenu"
+        @touchstart="openMenu"
         class="widget-main__button"
       >
         +

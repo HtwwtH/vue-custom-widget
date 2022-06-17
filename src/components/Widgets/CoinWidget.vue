@@ -8,6 +8,7 @@
         class='widget__delete'
         title='delete widget'
         @click='onDeleteClick'
+        @touchstart='onDeleteClick'
       >
         <img
           :src='DeleteIcon'

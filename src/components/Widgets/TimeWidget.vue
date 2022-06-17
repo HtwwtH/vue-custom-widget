@@ -7,7 +7,8 @@
       <button
         class='widget__delete'
         title='delete widget'
-        @click.stop='onDeleteClick'
+        @click='onDeleteClick'
+        @touchstart='onDeleteClick'
       >
         <img
           :src='DeleteIcon'
@@ -41,16 +42,6 @@
           {{ timezone }}
           </option>
       </select>
-      <button
-        class='widget__delete'
-        title='delete widget'
-        @click.stop='onDeleteClick'
-      >
-        <img
-          :src='DeleteIcon'
-          alt='delete widget'
-        >
-      </button>
 
       <p class='widget__subtitle'>Time here is:</p>
 
