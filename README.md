@@ -18,7 +18,8 @@
 
 ![Screenshot](https://github.com/HtwwtH/vue-custom-widget/blob/main/Screenshot3.png)
 
-## Project setup
+## Project setup  
+Node version: 14
 ```
 npm install
 ```
